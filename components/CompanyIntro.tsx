@@ -47,7 +47,7 @@ export default function CompanyIntro() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="absolute -bottom-6 -right-5 lg:-right-8 bg-blue-600 text-white px-6 py-5 shadow-xl"
             >
-              <div className="text-3xl font-black leading-none">10+</div>
+              <div className="text-3xl font-black leading-none">20+</div>
               <div className="text-blue-200 text-[10px] font-semibold tracking-widest uppercase mt-1">
                 Years Experience
               </div>
@@ -79,7 +79,7 @@ export default function CompanyIntro() {
             </p>
 
             <p className="text-[#4a5568] text-sm sm:text-base leading-relaxed mb-8">
-              Over 10 years and 100+ projects delivered across Lahore, Karachi,
+              Over 20 years and 100+ projects delivered across Lahore, Karachi,
               Islamabad and beyond — for clubs, hotels, schools and housing
               societies.
             </p>

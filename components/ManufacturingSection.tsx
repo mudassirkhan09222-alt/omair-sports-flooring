@@ -23,7 +23,7 @@ export default function ManufacturingSection() {
 
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80"
+          src="/images/manufacturing/mfg-civil-work.jpg"
           alt="Manufacturing"
           fill
           className="object-cover opacity-10"
@@ -114,7 +114,7 @@ export default function ManufacturingSection() {
           >
             <div className="relative aspect-[3/4] overflow-hidden">
               <Image
-                src="https://images.pexels.com/photos/3756168/pexels-photo-3756168.jpeg?auto=compress&cs=tinysrgb&w=900"
+                src="/images/manufacturing/mfg-installation.jpg"
                 alt="Sports court construction"
                 fill
                 className="object-cover"

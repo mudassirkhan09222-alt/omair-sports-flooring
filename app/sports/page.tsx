@@ -115,11 +115,11 @@ export default function SportsPage() {
                   </h2>
 
                   <p className="text-[#4a5568] text-base leading-relaxed mb-8 max-w-md">
-                    {sport.description}
+                    {sport.fullDescription || sport.description}
                   </p>
 
                   <div className="space-y-2 mb-8">
-                    {["Premium surface materials", "Certified installation team", "International standards compliance", "Custom court design & marking"].map(feat => (
+                    {(sport.features || ["Premium surface materials", "Certified installation team", "International standards compliance", "Custom court design & marking"]).map(feat => (
                       <div key={feat} className="flex items-center gap-3">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
                         <span className="text-[#0a1f44] text-[13px] font-semibold">{feat}</span>

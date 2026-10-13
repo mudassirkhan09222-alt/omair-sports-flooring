@@ -10,22 +10,22 @@ const capabilities = [
   {
     title: "Raw Material Import",
     desc: "We source premium raw materials directly from leading international manufacturers in Europe and Asia, ensuring consistent quality and competitive pricing.",
-    image: "https://images.unsplash.com/photo-1565945887714-d5139f4eb0ce?w=800&q=80",
+    image: "/images/manufacturing/mfg-materials.jpg",
   },
   {
     title: "In-House Production",
     desc: "Our manufacturing facility is equipped with modern machinery for producing PVC, PU and synthetic sports flooring systems to precise specifications.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+    image: "/images/manufacturing/mfg-civil-work.jpg",
   },
   {
     title: "Quality Control Lab",
     desc: "Every batch of material undergoes rigorous testing for thickness, hardness, shock absorption, slip resistance and durability before leaving our facility.",
-    image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=800&q=80",
+    image: "/images/manufacturing/mfg-quality.jpg",
   },
   {
     title: "Certified Installation",
     desc: "Our installation teams are trained and certified to deliver precision installation on every surface type, from padel courts to full indoor arenas.",
-    image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80",
+    image: "/images/manufacturing/mfg-installation.jpg",
   },
 ];
 
@@ -36,7 +36,7 @@ export default function ManufacturingPage() {
       <section className="relative pt-40 pb-24 bg-[#0a1f44] overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80"
+            src="/images/manufacturing/mfg-civil-work.jpg"
             alt="Manufacturing facility"
             fill
             className="object-cover opacity-15"
@@ -116,7 +116,7 @@ export default function ManufacturingPage() {
               className="relative aspect-[4/3] overflow-hidden"
             >
               <Image
-                src="https://images.unsplash.com/photo-1565945887714-d5139f4eb0ce?w=900&q=85"
+                src="/images/manufacturing/mfg-materials.jpg"
                 alt="Manufacturing floor"
                 fill
                 className="object-cover"

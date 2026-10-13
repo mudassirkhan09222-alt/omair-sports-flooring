@@ -60,13 +60,12 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-2">
             {/* Logo */}
-            <Link href="/" className="flex flex-col leading-none mb-6 group">
-              <span className="text-[11px] font-semibold tracking-[0.25em] uppercase text-blue-400">
-                OMAIR
-              </span>
-              <span className="text-[20px] font-black tracking-[0.1em] uppercase text-white group-hover:text-blue-300 transition-colors duration-300">
-                SPORTS FLOORING
-              </span>
+            <Link href="/" className="inline-flex mb-6 group">
+              <img
+                src="/OSF-LOGO.png"
+                alt="Omair Sports Flooring"
+                className="h-24 w-auto object-contain brightness-0 invert"
+              />
             </Link>
 
             <p className="text-white/50 text-[13px] leading-relaxed max-w-xs mb-8">

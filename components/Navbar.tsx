@@ -50,21 +50,12 @@ export default function Navbar() {
         <div className="max-w-screen-xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex flex-col leading-none group">
-              <span
-                className={`text-[11px] font-semibold tracking-[0.25em] uppercase transition-colors duration-300 ${
-                  scrolled || !isHome ? "text-blue-500" : "text-blue-300"
-                }`}
-              >
-                OMAIR
-              </span>
-              <span
-                className={`text-[17px] font-black tracking-[0.12em] uppercase transition-colors duration-300 ${
-                  scrolled || !isHome ? "text-navy-900 text-[#0a1f44]" : "text-white"
-                }`}
-              >
-                SPORTS FLOORING
-              </span>
+            <Link href="/" className="flex items-center group">
+              <img
+                src="/OSF-LOGO.png"
+                alt="Omair Sports Flooring"
+                className={`h-20 w-auto object-contain transition-all duration-300 ${scrolled || !isHome ? "" : "brightness-0 invert"}`}
+              />
             </Link>
 
             {/* Desktop nav */}
