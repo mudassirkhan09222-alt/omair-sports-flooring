@@ -367,20 +367,33 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Map placeholder */}
+              {/* Map */}
               <div>
                 <div className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-4">
                   Location
                 </div>
-                <div className="relative h-48 bg-[#e2e8f0] border border-[#cbd5e1] overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin size={32} className="text-blue-400 mx-auto mb-2" />
-                      <p className="text-[#4a5568] text-[12px] font-semibold">Map — Coming Soon</p>
-                      <p className="text-[#a0aec0] text-[11px]">{siteConfig.address}</p>
-                    </div>
-                  </div>
+                <div className="relative h-56 border border-[#cbd5e1] overflow-hidden">
+                  <iframe
+                    src="https://maps.google.com/maps?q=Gulshan-e-Iqbal+Block+13A+Karachi+Pakistan&output=embed"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Omair Sports Flooring Location"
+                    className="absolute inset-0"
+                  />
                 </div>
+                <a
+                  href="https://maps.google.com/?q=Block+13-A+Gulshan-e-Iqbal+Karachi+Sindh+75300+Pakistan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-blue-600 text-[11px] font-bold tracking-widest uppercase mt-2 hover:gap-3 transition-all duration-200"
+                >
+                  <MapPin size={11} />
+                  Open in Google Maps
+                </a>
               </div>
             </div>
           </div>

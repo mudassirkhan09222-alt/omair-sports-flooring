@@ -91,8 +91,8 @@ export default function AboutPage() {
           >
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1546519638405-a9b9a32b81a5?w=900&q=85"
-                alt="Sports court"
+                src="/images/about-story.jpg"
+                alt="Girl sitting on blue tennis court"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

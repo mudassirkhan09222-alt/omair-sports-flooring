@@ -84,7 +84,12 @@ export default function ManufacturingSection() {
                     <span className="text-white font-bold text-[13px] uppercase tracking-wide">{step.label}</span>
                     <span className="text-white/35 text-[11px] ml-2 hidden sm:inline">— {step.desc}</span>
                   </div>
-                  <div className="w-5 h-px bg-blue-500/25 group-hover:w-10 group-hover:bg-blue-400 transition-all duration-300" />
+                  <motion.div
+                    className="h-px bg-blue-400"
+                    initial={{ width: "1.25rem" }}
+                    whileHover={{ width: "2.5rem" }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </motion.div>
               ))}
             </div>

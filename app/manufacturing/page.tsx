@@ -10,7 +10,7 @@ const capabilities = [
   {
     title: "Raw Material Import",
     desc: "We source premium raw materials directly from leading international manufacturers in Europe and Asia, ensuring consistent quality and competitive pricing.",
-    image: "/images/manufacturing/mfg-materials.jpg",
+    image: "/images/manufacturing/mfg-import.jpg",
   },
   {
     title: "In-House Production",
@@ -116,8 +116,8 @@ export default function ManufacturingPage() {
               className="relative aspect-[4/3] overflow-hidden"
             >
               <Image
-                src="/images/manufacturing/mfg-materials.jpg"
-                alt="Manufacturing floor"
+                src="/images/manufacturing/mfg-court-install.jpg"
+                alt="Sports court installation and construction"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

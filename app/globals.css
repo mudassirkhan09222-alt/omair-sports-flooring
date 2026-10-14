@@ -15,10 +15,7 @@
   --border:     #e2e8f0;
 }
 
-/* Base */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
@@ -26,19 +23,12 @@ body {
   color: var(--navy);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Remove default dark-mode inversion */
 @media (prefers-color-scheme: dark) {
-  body {
-    background: #ffffff;
-    color: var(--navy);
-  }
+  body { background: #ffffff; color: var(--navy); }
 }
-
-/* ============================================================
-   Typography
-   ============================================================ */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-inter), system-ui, sans-serif;
@@ -46,46 +36,14 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-/* ============================================================
-   Selection
-   ============================================================ */
+::selection { background: #2563eb; color: #ffffff; }
 
-::selection {
-  background: #2563eb;
-  color: #ffffff;
-}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #f7f9fc; }
+::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #1d4ed8; }
 
-/* ============================================================
-   Scrollbar
-   ============================================================ */
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #f7f9fc;
-}
-::-webkit-scrollbar-thumb {
-  background: #93c5fd;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
-}
-
-/* ============================================================
-   Focus
-   ============================================================ */
-
-*:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 3px;
-}
-
-/* ============================================================
-   Utility: line-clamp (for browsers without native support)
-   ============================================================ */
+*:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
 
 .line-clamp-2 {
   display: -webkit-box;
@@ -100,10 +58,73 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
-/* ============================================================
-   Next/Image: prevent layout shift
-   ============================================================ */
+img { max-width: 100%; }
 
-img {
-  max-width: 100%;
+/* ── Scroll progress bar ── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  z-index: 9999;
+  transform-origin: left;
+}
+
+/* ── Premium shimmer on cards ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% auto;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* ── Floating badge pulse ── */
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+.float-anim { animation: floatPulse 3s ease-in-out infinite; }
+
+/* ── Section fade-up utility ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Noise texture overlay ── */
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Smooth page transitions ── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }

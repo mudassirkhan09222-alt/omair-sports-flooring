@@ -55,7 +55,13 @@ export default function Footer() {
       <div className="h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
 
       {/* Main footer */}
-      <div className="max-w-screen-xl mx-auto px-6 lg:px-10 py-16 lg:py-20">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-screen-xl mx-auto px-6 lg:px-10 py-16 lg:py-20"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-10">
           {/* Brand column */}
           <div className="lg:col-span-2">
@@ -189,7 +195,7 @@ export default function Footer() {
             </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Bottom bar */}
       <div className="border-t border-white/5">

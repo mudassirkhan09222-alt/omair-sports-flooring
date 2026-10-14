@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin, ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/data";
@@ -13,58 +14,100 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, index }: ProjectCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.6, delay: index * 0.07 }}
-      className="group relative overflow-hidden aspect-[4/5] cursor-pointer"
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Image
-        src={project.image}
-        alt={project.name}
-        fill
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        style={{ transform: "scale(1)" }}
-      />
+      <Link href={`/projects/${project.id}`} className="group relative block overflow-hidden aspect-[4/5]">
+        {/* Image with hover zoom */}
+        <motion.div
+          className="absolute inset-0"
+          whileHover={{ scale: 1.07 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Image
+            src={project.image}
+            alt={project.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </motion.div>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f44]/90 via-[#0a1f44]/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+        {/* Overlay */}
+        <motion.div
+          className="absolute inset-0"
+          initial={{ opacity: 0.65 }}
+          whileHover={{ opacity: 0.92 }}
+          transition={{ duration: 0.4 }}
+          style={{ background: "linear-gradient(to top, #0a1f44 0%, #0a1f4480 40%, transparent 100%)" }}
+        />
 
-      {/* Top badge */}
-      <div className="absolute top-4 left-4 flex gap-2">
-        <span className="bg-blue-600 text-white text-[10px] font-bold tracking-[0.15em] uppercase px-2.5 py-1">
-          {project.sport}
-        </span>
-        <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold tracking-[0.15em] uppercase px-2.5 py-1">
-          {project.type}
-        </span>
-      </div>
+        {/* Top accent line */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-0.5 bg-blue-500"
+          initial={{ scaleX: 0 }}
+          whileHover={{ scaleX: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          style={{ originX: 0 }}
+        />
 
-      {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-white text-base font-black uppercase tracking-tight mb-1.5">
-              {project.name}
-            </h3>
-            <div className="flex items-center gap-1.5 text-white/60">
-              <MapPin size={11} className="text-blue-300" />
-              <span className="text-[11px] font-medium">{project.location}</span>
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex gap-1.5">
+          <motion.span
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.08 + 0.2 }}
+            className="bg-blue-600 text-white text-[9px] font-bold tracking-widest uppercase px-2 py-1"
+          >
+            {project.sport}
+          </motion.span>
+          <motion.span
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.08 + 0.3 }}
+            className="bg-white/20 backdrop-blur-sm text-white text-[9px] font-bold tracking-widest uppercase px-2 py-1"
+          >
+            {project.type}
+          </motion.span>
+        </div>
+
+        {/* Content */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 p-5"
+          initial={{ y: 8 }}
+          whileHover={{ y: 0 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-white text-sm font-black uppercase tracking-tight mb-1.5">{project.name}</h3>
+              <div className="flex items-center gap-1.5 text-white/55">
+                <MapPin size={10} className="text-blue-300" />
+                <span className="text-[10px] font-medium">{project.location}</span>
+              </div>
             </div>
+            <motion.div
+              className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center flex-shrink-0"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileHover={{ opacity: 1, scale: 1, backgroundColor: "rgba(37,99,235,0.8)" }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArrowUpRight size={12} className="text-white" />
+            </motion.div>
           </div>
-          <div className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0">
-            <ArrowUpRight size={14} className="text-white" />
-          </div>
-        </div>
 
-        {/* Year */}
-        <div className="mt-3 pt-3 border-t border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="text-blue-300 text-[10px] font-bold tracking-[0.2em] uppercase">
-            {project.year}
-          </span>
-        </div>
-      </div>
+          <motion.div
+            className="mt-3 pt-3 border-t border-white/10"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <span className="text-blue-300 text-[9px] font-bold tracking-widest uppercase">{project.year}</span>
+          </motion.div>
+        </motion.div>
+      </Link>
     </motion.div>
   );
 }
