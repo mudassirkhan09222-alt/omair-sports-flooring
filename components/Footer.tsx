@@ -149,23 +149,43 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               <li>
-                <a
-                  href={`tel:${siteConfig.phone}`}
-                  className="flex items-start gap-3 text-white/60 hover:text-white transition-colors duration-200 group"
-                >
+                <a href={`tel:${siteConfig.phoneCEO}`} className="flex items-start gap-3 text-white/60 hover:text-white transition-colors duration-200">
                   <Phone size={14} className="mt-0.5 flex-shrink-0 text-blue-400" />
-                  <span className="text-[13px]">{siteConfig.phone}</span>
+                  <div>
+                    <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">CEO</div>
+                    <span className="text-[13px]">{siteConfig.phoneCEO}</span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href={`tel:${siteConfig.phoneManager}`} className="flex items-start gap-3 text-white/60 hover:text-white transition-colors duration-200">
+                  <Phone size={14} className="mt-0.5 flex-shrink-0 text-blue-400" />
+                  <div>
+                    <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">Manager</div>
+                    <span className="text-[13px]">{siteConfig.phoneManager}</span>
+                  </div>
                 </a>
               </li>
               <li>
                 <a
-                  href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+                  href={`https://wa.me/${siteConfig.whatsappCEO.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 text-white/60 hover:text-white transition-colors duration-200"
                 >
                   <MessageCircle size={14} className="mt-0.5 flex-shrink-0 text-blue-400" />
-                  <span className="text-[13px]">WhatsApp Us</span>
+                  <span className="text-[13px]">WhatsApp — CEO</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`https://wa.me/${siteConfig.whatsappManager.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-white/60 hover:text-white transition-colors duration-200"
+                >
+                  <MessageCircle size={14} className="mt-0.5 flex-shrink-0 text-blue-400" />
+                  <span className="text-[13px]">WhatsApp — Manager</span>
                 </a>
               </li>
               <li>

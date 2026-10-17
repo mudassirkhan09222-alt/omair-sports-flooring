@@ -48,6 +48,8 @@ const sportOptions = [
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -64,10 +66,41 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire up to API / email service
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("https://formspree.io/f/xgvkwnjp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject:       `New Quote Request — ${formData.name} (${formData.sport || "General"})`,
+          Name:           formData.name,
+          Company:        formData.company,
+          Phone:          formData.phone,
+          Email:          formData.email,
+          "Sport / Type": formData.sport,
+          Location:       formData.location,
+          Message:        formData.message,
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(
+          (data as { errors?: { message: string }[] })?.errors?.[0]?.message ||
+          "Something went wrong. Please try again or email us directly."
+        );
+      }
+    } catch {
+      setErrorMsg("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -262,15 +295,31 @@ export default function ContactPage() {
                     />
                   </div>
 
+                  {errorMsg && (
+                    <p className="text-red-500 text-sm bg-red-50 border border-red-200 px-4 py-3">
+                      {errorMsg}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
-                    className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 text-[13px] font-bold tracking-[0.12em] uppercase transition-all duration-300"
+                    disabled={loading}
+                    className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-70 disabled:cursor-not-allowed text-white px-12 py-4 text-[13px] font-bold tracking-[0.12em] uppercase transition-all duration-300"
                   >
-                    Request a Quote
-                    <Send
-                      size={15}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    />
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Request a Quote
+                        <Send size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </>
+                    )}
                   </button>
                 </form>
               )}
@@ -288,21 +337,37 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-5">
+                  {/* CEO Phone */}
                   <a
-                    href={`tel:${siteConfig.phone}`}
+                    href={`tel:${siteConfig.phoneCEO}`}
                     className="group flex items-start gap-4 p-4 border border-[#e2e8f0] hover:border-blue-200 hover:bg-blue-50/50 transition-all duration-200"
                   >
                     <div className="w-10 h-10 bg-blue-50 flex items-center justify-center flex-shrink-0">
                       <Phone size={16} className="text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">Phone</div>
-                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.phone}</div>
+                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">CEO — Call / WhatsApp</div>
+                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.phoneCEO}</div>
                     </div>
                   </a>
 
+                  {/* Manager Phone */}
                   <a
-                    href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+                    href={`tel:${siteConfig.phoneManager}`}
+                    className="group flex items-start gap-4 p-4 border border-[#e2e8f0] hover:border-blue-200 hover:bg-blue-50/50 transition-all duration-200"
+                  >
+                    <div className="w-10 h-10 bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      <Phone size={16} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">Manager — Call / WhatsApp</div>
+                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.phoneManager}</div>
+                    </div>
+                  </a>
+
+                  {/* WhatsApp CEO */}
+                  <a
+                    href={`https://wa.me/${siteConfig.whatsappCEO.replace(/\D/g, "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-start gap-4 p-4 border border-[#e2e8f0] hover:border-blue-200 hover:bg-blue-50/50 transition-all duration-200"
@@ -311,8 +376,24 @@ export default function ContactPage() {
                       <MessageCircle size={16} className="text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">WhatsApp</div>
-                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.whatsapp}</div>
+                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">WhatsApp — CEO</div>
+                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.whatsappCEO}</div>
+                    </div>
+                  </a>
+
+                  {/* WhatsApp Manager */}
+                  <a
+                    href={`https://wa.me/${siteConfig.whatsappManager.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-4 p-4 border border-[#e2e8f0] hover:border-blue-200 hover:bg-blue-50/50 transition-all duration-200"
+                  >
+                    <div className="w-10 h-10 bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      <MessageCircle size={16} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#a0aec0] mb-0.5">WhatsApp — Manager</div>
+                      <div className="text-[#0a1f44] font-semibold text-[14px]">{siteConfig.whatsappManager}</div>
                     </div>
                   </a>
 
