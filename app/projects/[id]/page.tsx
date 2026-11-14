@@ -1,74 +1,119 @@
-import { notFound } from "next/navigation";
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, MapPin, Calendar, ChevronRight } from "lucide-react";
-import { projects } from "@/lib/data";
+import { createClient } from "@supabase/supabase-js";
+import { ArrowLeft, MapPin, Calendar, Tag, ArrowRight } from "lucide-react";
 
-export async function generateStaticParams() {
-  return projects.map((p) => ({ id: p.id }));
-}
+type Project = {
+  id: string;
+  title: string;
+  location: string;
+  year: string;
+  category: string;
+  sport: string;
+  description: string;
+  image_url: string;
+  images?: string[];
+};
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const project = projects.find((p) => p.id === id);
-  if (!project) return {};
-  return {
-    title: `${project.name} | Omair Sports Flooring`,
-    description: project.description,
-  };
-}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const project = projects.find((p) => p.id === id);
-  if (!project) notFound();
+export default function ProjectDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading]  = useState(true);
+  const [activeImg, setActiveImg] = useState(0);
 
-  const others = projects.filter((p) => p.id !== project.id).slice(0, 3);
+  useEffect(() => {
+    if (!id) return;
+    supabase
+      .from("projects")
+      .select("*")
+      .eq("id", id)
+      .single()
+      .then(({ data, error }) => {
+        if (error || !data) { router.push("/404"); return; }
+        setProject(data as Project);
+        setLoading(false);
+      });
+  }, [id, router]);
+
+  if (loading) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  if (!project) return null;
+
+  // All images — cover first
+  const allImages: string[] = (() => {
+    const imgs = Array.isArray(project.images) && project.images.length > 0
+      ? project.images
+      : [project.image_url];
+    return imgs.filter(Boolean);
+  })();
 
   return (
-    <main className="bg-white">
-
-      {/* ── Full-screen hero image ── */}
-      <div className="relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[420px] overflow-hidden">
+    <main className="bg-white min-h-screen">
+      {/* ── Hero ── */}
+      <div className="relative w-full h-[55vh] sm:h-[65vh] lg:h-[75vh] min-h-[380px] overflow-hidden">
         <Image
-          src={project.image}
-          alt={project.name}
+          src={allImages[activeImg]}
+          alt={project.title}
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-center transition-opacity duration-500"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f44]/92 via-[#0a1f44]/35 to-[#0a1f44]/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f44]/90 via-[#0a1f44]/30 to-transparent" />
 
         {/* Breadcrumb */}
         <div className="absolute top-24 left-0 right-0 max-w-screen-xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center gap-2 text-white/50 text-xs font-medium">
+          <div className="flex items-center gap-2 text-white/50 text-xs">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <ChevronRight size={12} />
+            <span>/</span>
             <Link href="/projects" className="hover:text-white transition-colors">Projects</Link>
-            <ChevronRight size={12} />
-            <span className="text-white">{project.name}</span>
+            <span>/</span>
+            <span className="text-white/80 line-clamp-1">{project.title}</span>
           </div>
         </div>
 
-        {/* Title at bottom */}
+        {/* Title overlay */}
         <div className="absolute bottom-0 left-0 right-0 max-w-screen-xl mx-auto px-6 lg:px-12 pb-10">
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-3">
             <span className="bg-blue-600 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1">
               {project.sport}
             </span>
             <span className="bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1">
-              {project.type}
+              {project.category}
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white uppercase leading-tight tracking-tight">
-            {project.name}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase leading-tight tracking-tight">
+            {project.title}
           </h1>
         </div>
+
+        {/* Image switcher dots (if multiple) */}
+        {allImages.length > 1 && (
+          <div className="absolute bottom-4 right-6 lg:right-12 flex gap-2">
+            {allImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveImg(i)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  i === activeImg ? "bg-white scale-125" : "bg-white/40 hover:bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Content ── */}
@@ -78,57 +123,84 @@ export default async function ProjectDetailPage({
           {/* Left — description */}
           <div className="lg:col-span-2 space-y-10">
 
-            <div>
-              <p className="text-blue-600 text-xs font-semibold tracking-[0.2em] uppercase mb-3">
-                Project Overview
-              </p>
-              <p className="text-[#4a5568] text-base sm:text-lg leading-relaxed">
-                {project.description}
-              </p>
-            </div>
+            {/* Overview */}
+            {project.description && (
+              <div>
+                <p className="text-blue-600 text-xs font-semibold tracking-[0.2em] uppercase mb-3">
+                  Project Overview
+                </p>
+                <p className="text-[#4a5568] text-base sm:text-lg leading-relaxed">
+                  {project.description}
+                </p>
+              </div>
+            )}
 
-            {/* Key details */}
+            {/* Details grid */}
             <div>
               <p className="text-blue-600 text-xs font-semibold tracking-[0.2em] uppercase mb-5">
                 Project Details
               </p>
               <div className="grid sm:grid-cols-2 gap-4">
                 {[
-                  { label: "Sport",     value: project.sport      },
-                  { label: "Type",      value: project.type       },
-                  { label: "Location",  value: project.location   },
-                  { label: "Year",      value: project.year       },
-                  ...(project.client  ? [{ label: "Client",  value: project.client  }] : []),
-                  ...(project.area    ? [{ label: "Area",    value: project.area    }] : []),
-                  ...(project.surface ? [{ label: "Surface", value: project.surface }] : []),
-                ].map((detail) => (
-                  <div key={detail.label} className="flex items-start gap-4 bg-[#f7f9fc] px-5 py-4 border-l-2 border-blue-500">
-                    <span className="text-[#0a1f44] text-xs font-bold uppercase tracking-wide w-20 flex-shrink-0 mt-0.5">
-                      {detail.label}
-                    </span>
-                    <span className="text-[#4a5568] text-sm">{detail.value}</span>
+                  { label: "Sport",    value: project.sport,    icon: Tag      },
+                  { label: "Type",     value: project.category, icon: Tag      },
+                  { label: "Location", value: project.location, icon: MapPin   },
+                  { label: "Year",     value: project.year,     icon: Calendar },
+                ].map(({ label, value, icon: Icon }) => (
+                  <div key={label}
+                    className="flex items-start gap-4 bg-[#f7f9fc] px-5 py-4 border-l-2 border-blue-500">
+                    <Icon size={15} className="text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-[#0a1f44] text-xs font-bold uppercase tracking-wide mb-0.5">
+                        {label}
+                      </p>
+                      <p className="text-[#4a5568] text-sm">{value}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Image gallery (thumbnails) */}
+            {allImages.length > 1 && (
+              <div>
+                <p className="text-blue-600 text-xs font-semibold tracking-[0.2em] uppercase mb-4">
+                  Gallery
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {allImages.map((url, i) => (
+                    <button key={i} onClick={() => setActiveImg(i)}
+                      className={`relative aspect-video overflow-hidden border-2 transition-all ${
+                        i === activeImg ? "border-blue-500 ring-2 ring-blue-200" : "border-transparent hover:border-blue-300"
+                      }`}>
+                      <Image src={url} alt={`Image ${i + 1}`} fill
+                        className="object-cover" sizes="(max-width:640px)50vw,33vw" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right — sidebar */}
           <div className="space-y-6">
-
-            {/* Location + year card */}
+            {/* Info card */}
             <div className="border border-[#e2e8f0]">
               <div className="bg-[#0a1f44] px-5 py-3">
                 <p className="text-white text-xs font-bold tracking-widest uppercase">Project Info</p>
               </div>
               <div className="divide-y divide-[#e2e8f0]">
                 <div className="flex items-center gap-3 px-5 py-4">
-                  <MapPin size={16} className="text-blue-600 flex-shrink-0" />
+                  <MapPin size={15} className="text-blue-600 flex-shrink-0" />
                   <span className="text-[#4a5568] text-sm">{project.location}</span>
                 </div>
                 <div className="flex items-center gap-3 px-5 py-4">
-                  <Calendar size={16} className="text-blue-600 flex-shrink-0" />
+                  <Calendar size={15} className="text-blue-600 flex-shrink-0" />
                   <span className="text-[#4a5568] text-sm">Completed {project.year}</span>
+                </div>
+                <div className="flex items-center gap-3 px-5 py-4">
+                  <Tag size={15} className="text-blue-600 flex-shrink-0" />
+                  <span className="text-[#4a5568] text-sm">{project.sport} — {project.category}</span>
                 </div>
               </div>
             </div>
@@ -141,65 +213,21 @@ export default async function ProjectDetailPage({
               <p className="text-blue-100 text-sm leading-relaxed mb-5">
                 We can build the same for you — anywhere in Pakistan.
               </p>
-              <Link
-                href="/contact"
-                className="group flex items-center justify-between gap-2 bg-white text-blue-600 px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-blue-50 transition-colors duration-200"
-              >
+              <Link href="/contact"
+                className="group flex items-center justify-between gap-2 bg-white text-blue-600 px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-blue-50 transition-colors">
                 Get a Free Quote
-                <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
-            {/* Back */}
-            <Link
-              href="/projects"
-              className="group flex items-center gap-2 text-[#4a5568] text-xs font-bold tracking-widest uppercase hover:text-blue-600 transition-colors"
-            >
-              <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1" />
+            {/* Back link */}
+            <Link href="/projects"
+              className="group flex items-center gap-2 text-[#4a5568] text-xs font-bold tracking-widest uppercase hover:text-blue-600 transition-colors">
+              <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1" />
               All Projects
             </Link>
           </div>
         </div>
-
-        {/* ── More projects ── */}
-        {others.length > 0 && (
-          <div className="mt-20 pt-14 border-t border-[#e2e8f0]">
-            <p className="text-blue-600 text-xs font-semibold tracking-[0.2em] uppercase mb-3">More Work</p>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1f44] uppercase tracking-tight mb-8">
-              Other Projects
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {others.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/projects/${p.id}`}
-                  className="group relative overflow-hidden aspect-[4/3] block"
-                >
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f44]/90 via-[#0a1f44]/20 to-transparent" />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-blue-600 text-white text-[9px] font-bold tracking-widest uppercase px-2 py-1">
-                      {p.sport}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-white text-sm font-black uppercase tracking-tight mb-1">{p.name}</h3>
-                    <div className="flex items-center gap-1.5 text-white/55">
-                      <MapPin size={10} className="text-blue-300" />
-                      <span className="text-[10px]">{p.location}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </main>
   );
