@@ -72,19 +72,10 @@ export default function ContactPage() {
     setErrorMsg("");
 
     try {
-      const res = await fetch("https://formspree.io/f/xgvkwnjp", {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject:       `New Quote Request — ${formData.name} (${formData.sport || "General"})`,
-          Name:           formData.name,
-          Company:        formData.company,
-          Phone:          formData.phone,
-          Email:          formData.email,
-          "Sport / Type": formData.sport,
-          Location:       formData.location,
-          Message:        formData.message,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
       if (res.ok) {
@@ -92,7 +83,7 @@ export default function ContactPage() {
       } else {
         const data = await res.json().catch(() => ({}));
         setErrorMsg(
-          (data as { errors?: { message: string }[] })?.errors?.[0]?.message ||
+          (data as { error?: string })?.error ||
           "Something went wrong. Please try again or email us directly."
         );
       }
